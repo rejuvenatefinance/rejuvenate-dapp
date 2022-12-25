@@ -37,7 +37,6 @@ dependencies:
   url_launcher: ^6.1.5
   hooks_riverpod: ^1.0.4
   flutter_hooks: ^0.18.5+1
-  flutter_web3: ^2.1.9
   metaballs: ^1.3.1
   cached_network_image: ^3.2.1
   google_fonts: ^3.0.1
@@ -46,6 +45,9 @@ dependencies:
   intl: ^0.17.0
   webviewx: ^0.2.1
   loading_animation_widget: ^1.2.0+3
+  flutter_evm:
+    git:
+      url: "https://github.com/ilikecubes/flutter_evm.git"
 
 dev_dependencies:
   flutter_test:

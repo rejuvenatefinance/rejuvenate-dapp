@@ -1,13 +1,9 @@
-import 'dart:io';
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_web3/flutter_web3.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:metaballs/metaballs.dart';
-import 'package:rejuvenate/providers/wallet_connection_provider.dart';
+import 'package:rejuvenate/providers/flutter_evm.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../utils/constants.dart';
@@ -114,7 +110,7 @@ class Layout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final walletProvider = ref.watch(walletConnectionProvider);
+    final walletProvider = ref.watch(flutterEVMProvider);
     loadingWidget = walletProvider.isConnected
         ? null
         : Column(

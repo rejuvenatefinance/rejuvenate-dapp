@@ -17,7 +17,8 @@ class QuickLinks extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: TextButton.icon(
             onPressed: () {
-              launchUrlString("https://docs.rejuvenate.finance");
+              launchUrlString(
+                  "https://github.com/rejuvenatefinance/rejuvenate-assets/tree/master/raw/docs");
             },
             icon: Icon(
               LineIcons.alternateExternalLink,
@@ -50,10 +51,6 @@ class QuickLinks extends StatelessWidget {
               _QuickLinksItem(
                 icon: LineIcons.discord,
                 url: 'https://discord.gg/Cf2VUn4e2R',
-              ),
-              _QuickLinksItem(
-                icon: LineIcons.medium,
-                url: 'https://medium.com/@rejuvenate.finance',
               ),
               _QuickLinksItem(
                 icon: LineIcons.github,

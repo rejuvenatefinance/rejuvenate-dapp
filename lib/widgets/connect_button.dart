@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../providers/wallet_connection_provider.dart';
+import 'package:rejuvenate/providers/flutter_evm.dart';
 
 class ConnectButton extends ConsumerWidget {
   const ConnectButton({Key? key, required this.style}) : super(key: key);
@@ -9,18 +9,26 @@ class ConnectButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final walletConnect = ref.watch(walletConnectionProvider);
+    final walletConnect = ref.watch(flutterEVMProvider);
 
     return ElevatedButton(
       style: style,
-      onPressed: walletConnect.isConnected ? null : walletConnect.connect,
+      onPressed: walletConnect.isConnected
+          ? null
+          : () async {
+              walletConnect.connect(
+                context,
+                rpcUrl: "https://bsc-dataseed.binance.org/",
+                chainId: 56,
+              );
+            },
       child: SizedBox(
         width: 275.0,
         height: 50.0,
         child: Center(
           child: Text(
             walletConnect.isConnected
-                ? walletConnect.currentAddress
+                ? walletConnect.credentials?.address.hex ?? "Loading..."
                 : "Connect Wallet",
             style: const TextStyle(
               fontSize: 18.0,
