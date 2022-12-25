@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../utils/constants.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../utils/extensions.dart';
 

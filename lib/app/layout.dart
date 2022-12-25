@@ -1,17 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:metaballs/metaballs.dart';
+import 'package:rejuvenate/providers/wallet_connection_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../utils/extensions.dart';
 import '../widgets/side_navigation_menu.dart';
 
-class Layout extends StatelessWidget {
-  const Layout({Key? key, required this.child, required this.title})
+// ignore: must_be_immutable
+class Layout extends ConsumerWidget {
+  Layout({Key? key, required this.child, required this.title})
       : super(key: key);
 
   final String title;
-  final Widget child;
+  Widget child;
+  Widget? loadingWidget;
 
   PreferredSizeWidget _appBar(BuildContext context) {
     return AppBar(
@@ -71,7 +76,7 @@ class Layout extends StatelessWidget {
     return Scaffold(
       appBar: _appBar(context),
       drawer: const SideNavigationMenu(),
-      body: child,
+      body: loadingWidget ?? child,
     );
   }
 
@@ -87,12 +92,7 @@ class Layout extends StatelessWidget {
             child: _background(
               context,
               child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: 600.0,
-                  ),
-                  child: child,
-                ),
+                child: loadingWidget ?? child,
               ),
             ),
           ),
@@ -108,7 +108,54 @@ class Layout extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final walletProvider = ref.watch(walletConnectionProvider);
+    loadingWidget = walletProvider.isConnected
+        ? null
+        : Column(
+            children: [
+              Container(
+                height: 50.0,
+                width: context.width(),
+                color: context.theme().errorContainer,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: const [
+                    Icon(
+                      Icons.warning_amber_rounded,
+                    ),
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    Text(
+                      "No Wallet Connected!",
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LoadingAnimationWidget.halfTriangleDot(
+                        color: context.theme().onBackground,
+                        size: 50.0,
+                      ),
+                      const SizedBox(
+                        height: 16.0,
+                      ),
+                      const Text("Loading..."),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
     if (context.width() >= 900) {
       return _desktopScaffold(context);
     }

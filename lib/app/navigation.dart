@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import '../features/partners/partners_view.dart';
 import '../utils/extensions.dart';
 import 'layout.dart';
-import '../features/donations/donations_view.dart';
 import '../features/not_found/not_found_view.dart';
 import '../utils/constants.dart';
 
@@ -20,9 +18,6 @@ Route<dynamic>? onGenerateRoute(RouteSettings? settings) {
   }
 
   switch (settings?.name) {
-    case CRoutes.donationsRoute:
-      child = const DonationsView();
-      break;
     case CRoutes.farmsRoute:
       child = const FarmsView();
       break;
@@ -31,9 +26,6 @@ Route<dynamic>? onGenerateRoute(RouteSettings? settings) {
       break;
     case CRoutes.rugRecoveryRoute:
       child = const RugRecoveryView();
-      break;
-    case CRoutes.partnersRoute:
-      child = const PartnersView();
       break;
   }
   return _generateRoute(child, settings);

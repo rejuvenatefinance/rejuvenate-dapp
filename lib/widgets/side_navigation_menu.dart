@@ -93,10 +93,6 @@ class _SideNavigationMenuContent extends StatelessWidget {
         Divider(
           color: context.theme().onPrimary,
         ),
-        const _SideNavigationMenuItem(
-          route: CRoutes.donationsRoute,
-          icon: Icons.attach_money,
-        ),
         Divider(
           color: context.theme().onPrimary,
         ),

@@ -23,11 +23,9 @@ abstract class CColors {
 }
 
 abstract class CRoutes {
-  static const String donationsRoute = "/donate";
   static const String stakingRoute = "/staking";
   static const String farmsRoute = "/farms";
   static const String rugRecoveryRoute = "/rug-recovery";
-  static const String partnersRoute = "/partners";
 }
 
 abstract class CTokens {
