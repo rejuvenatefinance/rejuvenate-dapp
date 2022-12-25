@@ -45,7 +45,7 @@ class QuickLinks extends StatelessWidget {
               ),
               _QuickLinksItem(
                 icon: LineIcons.twitter,
-                url: 'https://twitter.com/rejuvenateRJV',
+                url: 'https://twitter.com/rejuvenatefin',
               ),
               _QuickLinksItem(
                 icon: LineIcons.discord,
@@ -57,7 +57,7 @@ class QuickLinks extends StatelessWidget {
               ),
               _QuickLinksItem(
                 icon: LineIcons.github,
-                url: 'https://github.com/rejuvenate-finance',
+                url: 'https://github.com/rejuvenatefinance',
               ),
             ],
           ),

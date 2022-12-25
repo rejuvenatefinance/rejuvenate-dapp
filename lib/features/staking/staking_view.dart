@@ -3,8 +3,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_web3/flutter_web3.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../utils/constants.dart';
 import 'staking_chart.dart';
 import '../../providers/staking_contract_flexible_provider.dart';
 import '../../providers/staking_contract_provider.dart';
@@ -192,7 +194,7 @@ class _StakingOption extends HookConsumerWidget {
               const Divider(),
               ConstrainedBox(
                 constraints: const BoxConstraints(
-                  maxHeight: 100.0,
+                  maxHeight: 150.0,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -288,6 +290,30 @@ class _StakingOption extends HookConsumerWidget {
                                   ? () => contract.unstake(
                                         unstakingTextController.text.toWei(),
                                       )
+                                  : null,
+                            ),
+                            const SizedBox(
+                              height: 4.0,
+                            ),
+                            ElevatedButton.icon(
+                              label: const Text("Unstake All"),
+                              icon: const Icon(
+                                Icons.arrow_upward,
+                              ),
+                              style: context.theme().onPrimaryButton(),
+                              onPressed: walletConnect.isConnected
+                                  ? () async {
+                                      final rjvContract = ContractERC20(
+                                          CTokens.rjv["address"],
+                                          walletConnect.signer);
+                                      final amount = await rjvContract
+                                          .balanceOf(await walletConnect.signer
+                                                  ?.getAddress() ??
+                                              "");
+                                      contract.unstake(
+                                        amount,
+                                      );
+                                    }
                                   : null,
                             ),
                           ],

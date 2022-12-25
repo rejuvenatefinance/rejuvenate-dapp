@@ -1,11 +1,16 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_web3/flutter_web3.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:metaballs/metaballs.dart';
 import 'package:rejuvenate/providers/wallet_connection_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../utils/constants.dart';
 import '../utils/extensions.dart';
 import '../widgets/side_navigation_menu.dart';
 
@@ -36,6 +41,38 @@ class Layout extends ConsumerWidget {
             ),
             icon: const Icon(
               Icons.monetization_on_outlined,
+            ),
+            style: context.theme().onPrimaryButton(),
+          ),
+        ),
+        const SizedBox(
+          width: 16.0,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: kToolbarHeight / 6),
+          child: ElevatedButton.icon(
+            onPressed: () async {
+              await showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    content: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: 200.0,
+                          maxWidth: 300.0,
+                          minWidth: min(context.width(), 300.0),
+                        ),
+                        child: _MigrationDialog()),
+                    title: const Text("Migration"),
+                  );
+                },
+              );
+            },
+            label: const Text(
+              "Migrate",
+            ),
+            icon: const Icon(
+              Icons.swap_horizontal_circle_outlined,
             ),
             style: context.theme().onPrimaryButton(),
           ),
@@ -229,6 +266,69 @@ class Layout extends ConsumerWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class _MigrationDialog extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final walletConnect = ref.watch(walletConnectionProvider);
+    if (!walletConnect.isConnected) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        const Text(
+          "The process of Migration will walk you through 2 Transactions, one to approve the migration contract and one to actually migrate the tokens.",
+        ),
+        const SizedBox(
+          height: 32.0,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: kToolbarHeight / 6),
+          child: ElevatedButton.icon(
+            onPressed: () async {
+              final rjvContract =
+                  ContractERC20(CTokens.rjv["address"], walletConnect.signer);
+              await rjvContract.approve(CContracts.migration["address"],
+                  BigInt.from(1000000 * pow(10, 18)));
+              final amount = await rjvContract
+                  .balanceOf(await walletConnect.signer?.getAddress() ?? "");
+              while (await rjvContract.allowance(
+                      await walletConnect.signer?.getAddress() ?? "",
+                      CContracts.migration["address"]) <
+                  amount) {
+                sleep(const Duration(milliseconds: 500));
+              }
+              final migration = Contract(
+                CContracts.migration["address"],
+                CContracts.migration["abi"],
+                walletConnect.signer,
+              );
+              await migration.call(
+                "migrate",
+                [amount],
+              );
+              // ignore: use_build_context_synchronously
+              context.navigator().pop();
+            },
+            label: const Text(
+              "Migrate",
+            ),
+            icon: const Icon(
+              Icons.swap_horizontal_circle_outlined,
+            ),
+            style: context.theme().primaryButton(),
+          ),
+        ),
+      ],
     );
   }
 }
