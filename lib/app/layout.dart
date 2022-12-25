@@ -48,38 +48,6 @@ class Layout extends ConsumerWidget {
         const SizedBox(
           width: 16.0,
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: kToolbarHeight / 6),
-          child: ElevatedButton.icon(
-            onPressed: () async {
-              await showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    content: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: 200.0,
-                          maxWidth: 300.0,
-                          minWidth: min(context.width(), 300.0),
-                        ),
-                        child: _MigrationDialog()),
-                    title: const Text("Migration"),
-                  );
-                },
-              );
-            },
-            label: const Text(
-              "Migrate",
-            ),
-            icon: const Icon(
-              Icons.swap_horizontal_circle_outlined,
-            ),
-            style: context.theme().onPrimaryButton(),
-          ),
-        ),
-        const SizedBox(
-          width: 16.0,
-        ),
         IconButton(
           icon: const Icon(
             Icons.info,
@@ -215,9 +183,9 @@ class Layout extends ConsumerWidget {
                 const SizedBox(
                   height: 8.0,
                 ),
-                const SelectableText(
-                  '0x2B60Bd0D80495DD27CE3F8610B4980E94056b30c',
-                  style: TextStyle(
+                SelectableText(
+                  CTokens.rjvf["address"],
+                  style: const TextStyle(
                     color: Colors.grey,
                   ),
                 ),
@@ -231,7 +199,7 @@ class Layout extends ConsumerWidget {
                   height: 8.0,
                 ),
                 const SelectableText(
-                  '0xFb08de74D3DC381d2130e8885BdaD4e558b24145',
+                  CWallets.treasury,
                   style: TextStyle(
                     color: Colors.grey,
                   ),
@@ -239,7 +207,7 @@ class Layout extends ConsumerWidget {
                 TextButton(
                   onPressed: () {
                     launchUrlString(
-                        "https://debank.com/profile/0xfb08de74d3dc381d2130e8885bdad4e558b24145");
+                        "https://debank.com/profile/${CWallets.treasury}");
                   },
                   child: Text(
                     "Show on DeBank",
@@ -266,69 +234,6 @@ class Layout extends ConsumerWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class _MigrationDialog extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final walletConnect = ref.watch(walletConnectionProvider);
-    if (!walletConnect.isConnected) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        const Text(
-          "The process of Migration will walk you through 2 Transactions, one to approve the migration contract and one to actually migrate the tokens.",
-        ),
-        const SizedBox(
-          height: 32.0,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: kToolbarHeight / 6),
-          child: ElevatedButton.icon(
-            onPressed: () async {
-              final rjvContract =
-                  ContractERC20(CTokens.rjv["address"], walletConnect.signer);
-              await rjvContract.approve(CContracts.migration["address"],
-                  BigInt.from(1000000 * pow(10, 18)));
-              final amount = await rjvContract
-                  .balanceOf(await walletConnect.signer?.getAddress() ?? "");
-              while (await rjvContract.allowance(
-                      await walletConnect.signer?.getAddress() ?? "",
-                      CContracts.migration["address"]) <
-                  amount) {
-                sleep(const Duration(milliseconds: 500));
-              }
-              final migration = Contract(
-                CContracts.migration["address"],
-                CContracts.migration["abi"],
-                walletConnect.signer,
-              );
-              await migration.call(
-                "migrate",
-                [amount],
-              );
-              // ignore: use_build_context_synchronously
-              context.navigator().pop();
-            },
-            label: const Text(
-              "Migrate",
-            ),
-            icon: const Icon(
-              Icons.swap_horizontal_circle_outlined,
-            ),
-            style: context.theme().primaryButton(),
-          ),
-        ),
-      ],
     );
   }
 }

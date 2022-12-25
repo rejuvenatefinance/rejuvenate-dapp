@@ -83,15 +83,12 @@ class _SideNavigationMenuContent extends StatelessWidget {
           icon: Icons.layers_outlined,
         ),
         const _SideNavigationMenuItem(
-          route: CRoutes.farmsRoute,
-          icon: Icons.agriculture_outlined,
+          route: CRoutes.insuranceRoute,
+          icon: Icons.shield_outlined,
         ),
         const _SideNavigationMenuItem(
-          route: CRoutes.rugRecoveryRoute,
-          icon: Icons.switch_access_shortcut_add_rounded,
-        ),
-        Divider(
-          color: context.theme().onPrimary,
+          route: CRoutes.farmsRoute,
+          icon: Icons.agriculture_outlined,
         ),
         Divider(
           color: context.theme().onPrimary,

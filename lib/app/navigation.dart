@@ -4,10 +4,6 @@ import 'layout.dart';
 import '../features/not_found/not_found_view.dart';
 import '../utils/constants.dart';
 
-import '../features/farms/farms_view.dart';
-import '../features/rug_recovery/rug_recovery_view.dart';
-import '../features/staking/staking_view.dart';
-
 Route<dynamic>? onGenerateRoute(RouteSettings? settings) {
   Widget child = const NotFoundView();
 
@@ -19,13 +15,13 @@ Route<dynamic>? onGenerateRoute(RouteSettings? settings) {
 
   switch (settings?.name) {
     case CRoutes.farmsRoute:
-      child = const FarmsView();
+      child = const NotFoundView();
       break;
     case CRoutes.stakingRoute:
-      child = const StakingView();
+      child = const NotFoundView();
       break;
-    case CRoutes.rugRecoveryRoute:
-      child = const RugRecoveryView();
+    case CRoutes.insuranceRoute:
+      child = const NotFoundView();
       break;
   }
   return _generateRoute(child, settings);
